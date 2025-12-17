@@ -1,226 +1,86 @@
 <x-filament-panels::page>
-    <div class="space-y-4">
+    <div class="space-y-6">
 
-        {{-- Header --}}
-        <div>
-            <p class="text-[11px] font-semibold tracking-[0.16em] text-indigo-500 uppercase">
-                Pusat Penelitian &amp; Penerbitan · UIN Jakarta
-            </p>
-            <h2 class="text-base font-semibold text-slate-900">
-                Kategori: Data Penelitian
-                <span class="text-sm font-normal text-slate-600">
-                    ({{ $totalDokumen }} Dokumen)
-                </span>
+        {{-- Your Header / Title --}}
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                {{ $fakultas }}
             </h2>
-            <p class="text-xs text-slate-500">
-                Fakultas: <span class="font-semibold text-slate-800">{{ $fakultas }}</span>
-            </p>
+            <x-filament::button color="gray" tag="a" href="{{ \App\Filament\Pages\DashboardRiset::getUrl() }}">
+                Kembali
+            </x-filament::button>
         </div>
 
-        {{-- BLOK 1: Diterima / Disetujui / Dibayar --}}
-        <div class="rounded-xl border border-emerald-200 bg-emerald-50/80 overflow-hidden">
-            <div class="px-4 py-2.5 border-b border-emerald-200 bg-emerald-100/80">
-                <h3 class="text-xs font-semibold text-emerald-800">
-                    DITERIMA / DISETUJUI / DIBAYAR
-                    <span class="font-normal">
-                        ({{ $diterima->count() }} Dokumen)
-                    </span>
-                </h3>
-            </div>
+        {{-- TABLE EXAMPLE (Just showing where to put the button) --}}
+        <x-filament::section>
+            <x-slot name="heading">Daftar Penelitian</x-slot>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full text-[12px]">
-                    <thead>
-                        <tr class="bg-emerald-50 text-emerald-900">
-                            <th class="px-4 py-2 text-left font-semibold">Judul Dokumen</th>
-                            <th class="px-4 py-2 text-left font-semibold">Klaster</th>
-                            <th class="px-4 py-2 text-left font-semibold">Penulis Utama</th>
-                            <th class="px-4 py-2 text-left font-semibold">Prodi</th>
-                            <th class="px-4 py-2 text-left font-semibold">Tahun</th>
-                            <th class="px-4 py-2 text-left font-semibold">Status</th>
-                            <th class="px-4 py-2 text-right font-semibold">Detail Siap</th>
+                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-200 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-200">
+                        <tr>
+                            <th class="px-4 py-3">Judul</th>
+                            <th class="px-4 py-3">Penulis</th>
+                            <th class="px-4 py-3">Tahun</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($diterima as $item)
-                            <tr class="bg-white border-t border-emerald-100">
-                                <td class="px-4 py-2 align-top">
-                                    <a href="#"
-                                       class="text-indigo-600 hover:underline">
-                                        {{ $item->judul }}
-                                    </a>
+                        {{-- Combine both lists for display, or loop separately as you were doing --}}
+                        @foreach ($diterima->merge($ditolak) as $item)
+                            <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <td class="px-4 py-3 font-medium text-gray-200 dark:text-white">
+                                    {{ $item->judul }}
                                 </td>
-                                <td class="px-4 py-2 align-top">
-                                    {{ $item->klaster ?? '-' }}
+                                <td class="px-4 py-3">{{ $item->penulis_utama }}</td>
+                                <td class="px-4 py-3">{{ $item->tahun }}</td>
+                                <td class="px-4 py-3">
+                                    <x-filament::badge :color="$item->status === 'Diterima' ? 'success' : 'warning'">
+                                        {{ $item->status }}
+                                    </x-filament::badge>
                                 </td>
-                                <td class="px-4 py-2 align-top font-semibold text-slate-800">
-                                    {{ $item->penulis_utama ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    {{ $item->prodi ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    {{ $item->tahun ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    <span
-                                        class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
-                                        {{ strtoupper($item->status ?? 'DITERIMA') }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 align-top text-right">
-                                    <button type="button"
-                                    wire:click="showDetail({{ $item->id }})"
-                                    class="text-indigo-600 text-[11px] font-medium hover:underline">
-                                    Lihat Data
+                                <td class="px-4 py-3 text-right">
+                                    {{-- THE EDIT BUTTON --}}
+                                    <button wire:click="edit({{ $item->id }})"
+                                            class="text-primary-600 hover:text-primary-900 font-medium text-xs underline">
+                                        Edit Data
                                     </button>
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="px-4 py-3 text-center text-[11px] text-slate-500">
-                                    Belum ada dokumen pada kategori ini.
-                                </td>
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-filament::section>
 
-        {{-- BLOK 2: Ditolak / Diproses / Tertunda --}}
-        <div class="rounded-xl border border-rose-200 bg-rose-50/80 overflow-hidden">
-            <div class="px-4 py-2.5 border-b border-rose-200 bg-rose-100/80">
-                <h3 class="text-xs font-semibold text-rose-800">
-                    DITOLAK / DIPROSES / TERTUNDA
-                    <span class="font-normal">
-                        ({{ $ditolak->count() }} Dokumen)
-                    </span>
-                </h3>
+    {{-- Example button in your table: <button wire:click="edit({{ $item->id }})">Edit</button> --}}
+
+    <x-filament::modal
+        wire:model="isEditModalOpen"
+        width="3xl"
+    >
+        <x-slot name="heading">
+            Edit Data Penelitian
+        </x-slot>
+
+        <form wire:submit.prevent="save">
+            {{ $this->form }}
+
+            <div class="mt-6 flex justify-end gap-3">
+                <x-filament::button color="gray" wire:click="$set('isEditModalOpen', false)">
+                    Batal
+                </x-filament::button>
+
+                <x-filament::button type="submit">
+                    Simpan Perubahan
+                </x-filament::button>
             </div>
+        </form>
+    </x-filament::modal>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-[12px]">
-                    <thead>
-                        <tr class="bg-rose-50 text-rose-900">
-                            <th class="px-4 py-2 text-left font-semibold">Judul Dokumen</th>
-                            <th class="px-4 py-2 text-left font-semibold">Klaster</th>
-                            <th class="px-4 py-2 text-left font-semibold">Penulis Utama</th>
-                            <th class="px-4 py-2 text-left font-semibold">Prodi</th>
-                            <th class="px-4 py-2 text-left font-semibold">Tahun</th>
-                            <th class="px-4 py-2 text-left font-semibold">Status</th>
-                            <th class="px-4 py-2 text-right font-semibold">Detail Siap</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($ditolak as $item)
-                            <tr class="bg-white border-t border-rose-100">
-                                <td class="px-4 py-2 align-top">
-                                    <a href="#"
-                                       class="text-indigo-600 hover:underline">
-                                        {{ $item->judul }}
-                                    </a>
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    {{ $item->klaster ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top font-semibold text-slate-800">
-                                    {{ $item->penulis_utama ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    {{ $item->prodi ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    {{ $item->tahun ?? '-' }}
-                                </td>
-                                <td class="px-4 py-2 align-top">
-                                    <span
-                                        class="inline-flex items-center rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-semibold text-rose-700">
-                                        {{ strtoupper($item->status ?? 'DITOLAK') }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 align-top text-right">
-                                    <a href="#"
-                                       class="text-indigo-600 text-[11px] font-medium hover:underline">
-                                        Lihat Data
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="px-4 py-3 text-center text-[11px] text-slate-500">
-                                    Belum ada dokumen pada kategori ini.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    {{-- Essential for Filament Modals to work --}}
+    <x-filament-actions::modals />
 
-        {{-- Modal Detail Penulis --}}
-<x-filament::modal
-    id="detail-penulis-modal"
-    icon="heroicon-o-user-circle"
-    width="md"
-    heading="Data Penulis (SIAP)"
-    :visible="$showDetailModal"
-    :close-button="true"
-    :slide-over="false"
-    x-on:close-modal.window="$wire.set('showDetailModal', false)"
->
-    @if ($selectedPenelitian)
-        <div class="space-y-2 text-[13px]">
-            <div class="grid grid-cols-3 gap-x-3">
-                <div class="text-slate-500">ID Penulis</div>
-                <div class="col-span-2 font-semibold text-slate-800">
-                    {{ $selectedPenelitian->id_penulis ?? 'ID-' . $selectedPenelitian->id }}
-                </div>
-
-                <div class="text-slate-500">Nama Lengkap</div>
-                <div class="col-span-2 font-semibold text-slate-800">
-                    {{ $selectedPenelitian->penulis_utama ?? '-' }}
-                </div>
-
-                <div class="text-slate-500">NIP/NIDN/NRP</div>
-                <div class="col-span-2 font-semibold text-slate-800">
-                    {{ $selectedPenelitian->nip ?? 'NIP-' . $selectedPenelitian->id }}
-                </div>
-
-                <div class="text-slate-500">Prodi</div>
-                <div class="col-span-2 font-semibold text-slate-800">
-                    {{ $selectedPenelitian->prodi ?? 'Non-Akademik' }}
-                </div>
-
-                <div class="text-slate-500">Fakultas</div>
-                <div class="col-span-2 font-semibold text-slate-800">
-                    {{ $selectedPenelitian->fakultas ?? 'Unit Lain' }}
-                </div>
-            </div>
-
-            <p class="mt-3 text-[11px] text-red-500">
-                *Data ini disinkronisasi dari Akun SIAP Penulis.
-            </p>
-        </div>
-    @endif
-
-    <x-slot name="footer">
-        <x-filament::button
-            color="gray"
-            x-on:click="$wire.set('showDetailModal', false)"
-        >
-            Tutup
-        </x-filament::button>
-    </x-slot>
-</x-filament::modal>
-
-
-        {{-- Tombol kembali --}}
-        <div class="flex justify-end">
-            <a href="{{ \App\Filament\Pages\PenelitianByFakultas::getUrl() }}"
-               class="inline-flex items-center rounded-md bg-slate-800 px-4 py-2 text-xs font-medium text-white hover:bg-slate-900">
-                Kembali ke Rekap Fakultas
-            </a>
-        </div>
     </div>
 </x-filament-panels::page>

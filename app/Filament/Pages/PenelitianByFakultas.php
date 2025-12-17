@@ -2,52 +2,81 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Penelitian;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use BackedEnum;
+use Illuminate\Support\Facades\DB;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\WithFileUploads as LivewireWithFileUploads;
 
 class PenelitianByFakultas extends Page
 {
-    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-document-text';
+    use WithFileUploads;
 
-    protected static ?string $title = 'Daftar Dokumen & Data Penulis Berdasarkan Fakultas';
-
-    protected static ?string $navigationLabel = 'Penelitian';
-
-    // URL dalam panel: /admin/penelitian
     protected static ?string $slug = 'penelitian';
-
     protected string $view = 'filament.pages.penelitian-by-fakultas';
 
-    /** @var array<int, array{nama:string, jumlah:int}> */
-    public array $fakultas = [];
+    public $fileExcel;
 
+    public array $fakultas = [];
     public int $totalKeseluruhan = 0;
 
     public function mount(): void
     {
-        // Data rekap statik sesuai yang kamu mau (total 353)
-        $this->fakultas = [
-            ['nama' => 'Fakultas Ilmu Tarbiyah dan Keguruan', 'jumlah' => 45],
-            ['nama' => 'Fakultas Adab dan Humaniora', 'jumlah' => 30],
-            ['nama' => 'Fakultas Ushuluddin', 'jumlah' => 20],
-            ['nama' => 'Fakultas Syariah dan Hukum', 'jumlah' => 35],
-            ['nama' => 'Fakultas Ilmu Dakwah dan Komunikasi', 'jumlah' => 15],
-            ['nama' => 'Fakultas Dirasat Islamiyah', 'jumlah' => 5],
-            ['nama' => 'Fakultas Psikologi', 'jumlah' => 10],
-            ['nama' => 'Fakultas Ekonomi dan Bisnis', 'jumlah' => 40],
-            ['nama' => 'Fakultas Sains dan Teknologi', 'jumlah' => 50],
-            ['nama' => 'Fakultas Ilmu Kesehatan', 'jumlah' => 25],
-            ['nama' => 'Fakultas Kedokteran', 'jumlah' => 35],
-            ['nama' => 'Fakultas Ilmu Sosial dan Ilmu Politik', 'jumlah' => 20],
-            ['nama' => 'Sekolah Pasca Sarjana', 'jumlah' => 18],
-            ['nama' => 'Unit Lain', 'jumlah' => 5],
-        ];
-
-        $this->totalKeseluruhan = array_sum(array_column($this->fakultas, 'jumlah')); // 353
+        $this->refreshStats();
     }
 
-    public static function getNavigationGroup(): ?string
+    public function refreshStats()
     {
-        return 'Riset & Publikasi';
+        $data = Penelitian::query()
+            ->select('fakultas', DB::raw('count(*) as total'))
+            ->groupBy('fakultas')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $this->fakultas = $data->map(function ($item) {
+            return [
+                'nama' => $item->fakultas,
+                'jumlah' => $item->total,
+            ];
+        })->toArray();
+
+        $this->totalKeseluruhan = Penelitian::count();
+    }
+
+    public function importData()
+    {
+        $this->validate([
+            'fileExcel' => 'required|file|mimes:csv,txt|max:10240',
+        ]);
+
+        $path = $this->fileExcel->getRealPath();
+        $handle = fopen($path, 'r');
+
+        fgetcsv($handle);
+
+        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            Penelitian::create([
+                'judul'           => $row[0] ?? 'No Title',
+                'fakultas'        => $row[1] ?? 'Uncategorized',
+                'penulis_utama'   => $row[2] ?? 'Anonim',
+                'anggota_penulis' => $row[3] ?? null,
+                'tahun'           => (int) ($row[4] ?? date('Y')),
+                'status'          => $row[5] ?? 'Proses',
+                'abstrak'         => $row[6] ?? null,
+            ]);
+        }
+
+        fclose($handle);
+
+        $this->reset('fileExcel');
+
+        $this->refreshStats();
+
+        Notification::make()
+            ->title('Upload Berhasil')
+            ->body('Data penelitian telah berhasil diimpor.')
+            ->success()
+            ->send();
     }
 }
