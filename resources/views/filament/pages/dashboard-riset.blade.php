@@ -14,8 +14,7 @@
 
             <div class="flex items-center gap-2">
                 <label class="text-sm text-gray-600">Periode:</label>
-                <select
-                    class="border-gray-300 rounded-md text-sm focus:border-primary-500 focus:ring-primary-500">
+                <select class="border-gray-300 rounded-md text-sm focus:border-primary-500 focus:ring-primary-500">
                     <option value="2021">2021</option>
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
@@ -25,20 +24,17 @@
             </div>
         </div>
 
-        {{-- Statistik ringkas (kartu-kartu Filament) --}}
+        {{-- Kartu ringkas: Data Penelitian, Insentif, Tagihan Publikasi, Bantuan Buku Referensi --}}
         @livewire(\App\Filament\Widgets\DashboardStats::class)
 
-        {{-- Grid: Grafik + Tabel Fakultas --}}
-        <div class="grid gap-6 md:grid-cols-3">
-            {{-- Grafik Batang: ambil 2 kolom di layar besar --}}
-            <div class="md:col-span-2 bg-white p-6 rounded-xl shadow">
-                @livewire(name: \App\Filament\Widgets\DashboardChart::class)
-            </div>
-
-            {{-- Tabel Fakultas: 1 kolom di kanan --}}
-            <div class="bg-white p-6 rounded-xl shadow">
-                @livewire(\App\Http\Livewire\FakultasTable::class)
-            </div>
+        {{-- Chart/Stats Total Kumulatif 5 Tahun --}}
+        <div class="p-0 bg-transparent shadow-none">
+            @livewire(\App\Filament\Widgets\DashboardChart::class)
         </div>
+
+        <div class="p-0 bg-transparent shadow-none">
+            @livewire(\App\Filament\Widgets\DashboardData::class)
+        </div>
+
     </div>
 </x-filament-panels::page>

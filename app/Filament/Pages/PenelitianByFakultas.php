@@ -46,10 +46,10 @@ class PenelitianByFakultas extends Page
         $this->totalKeseluruhan = Penelitian::count();
     }
 
-    public function importData()
+    public function importData(): void
     {
         $this->validate([
-            'fileExcel' => 'required|file|mimes:csv,txt|max:10240',
+            'fileExcel' => 'required|mimes:csv,txt|max:10240'
         ]);
 
         $path = $this->fileExcel->getRealPath();
@@ -57,28 +57,47 @@ class PenelitianByFakultas extends Page
 
         fgetcsv($handle);
 
-        while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-            Penelitian::create([
-                'judul'           => $row[0] ?? 'No Title',
-                'fakultas'        => $row[1] ?? 'Uncategorized',
-                'penulis_utama'   => $row[2] ?? 'Anonim',
-                'anggota_penulis' => $row[3] ?? null,
-                'tahun'           => (int) ($row[4] ?? date('Y')),
-                'status'          => $row[5] ?? 'Proses',
-                'abstrak'         => $row[6] ?? null,
-            ]);
+        DB::beginTransaction();
+        try {
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+
+                $rawName = $row[0] ?? 'Anonim';
+                $cleanName = trim(str_ireplace('(KETUA)', '', $rawName));
+
+                $kodeFakultas = isset($row[4]) ? trim($row[4]) : 'N/A';
+
+                $fakultas = \App\Models\Fakultas::firstOrCreate(
+                    ['kode' => $kodeFakultas],
+                    ['nama' => 'Fakultas ' . $kodeFakultas]
+                );
+
+                Penelitian::create([
+                    'judul'           => $row[2] ?? 'Untitled',
+                    'fakultas_id'     => $fakultas->id,
+                    'fakultas' => $fakultas->nama,
+                    'penulis_utama'   => $cleanName,
+                    'anggota_penulis' => null,
+                    'tahun'           => date('Y'),
+                    'status'          => 'Proses',
+                    'abstrak'         => $row[3] ?? null,
+                ]);
+            }
+
+            DB::commit();
+
+            $this->reset('fileExcel');
+            $this->refreshStats();
+            Notification::make()->title('Data Berhasil Diimpor')->success()->send();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Notification::make()
+                ->title('Gagal Impor')
+                ->body('Error pada baris data: ' . $e->getMessage())
+                ->danger()
+                ->send();
         }
 
         fclose($handle);
-
-        $this->reset('fileExcel');
-
-        $this->refreshStats();
-
-        Notification::make()
-            ->title('Upload Berhasil')
-            ->body('Data penelitian telah berhasil diimpor.')
-            ->success()
-            ->send();
     }
 }

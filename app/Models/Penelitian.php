@@ -11,6 +11,7 @@ class Penelitian extends Model
 
     protected $fillable = [
         'judul',
+        'fakultas_id',
         'fakultas',
         'penulis_utama',
         'anggota_penulis',
@@ -19,4 +20,9 @@ class Penelitian extends Model
         'abstrak',
         'file_path',
     ];
+
+    public function fakultas()
+    {
+        return $this->belongsTo(Fakultas::class);
+    }
 }
