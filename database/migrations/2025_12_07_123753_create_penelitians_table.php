@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('penelitians', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
-            $table->string('fakultas'); // contoh: "Fakultas Ilmu Tarbiyah dan Keguruan"
+            $table->string('fakultas');
             $table->string('penulis_utama');
             $table->string('anggota_penulis')->nullable(); // bisa kosong
             $table->integer('tahun'); // 2021–2025
