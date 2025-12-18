@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Filament\Pages\PenelitianByFakultas;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use App\Filament\Pages\Insentif;
 
 
 class DashboardStats extends BaseWidget
@@ -22,7 +23,9 @@ class DashboardStats extends BaseWidget
 
             Stat::make('Insentif', 1500)
                 ->description('Jumlah insentif diberikan')
-                ->color('success'),
+                ->color('success')
+                ->url(Insentif::getUrl())
+                ->extraAttributes(['class' => 'cursor-pointer']),
 
             Stat::make('Tagihan Publikasi', 180)
                 ->description('Tagihan yang diajukan')

@@ -15,6 +15,12 @@ class Penelitian extends Model
         'fakultas',
         'penulis_utama',
         'anggota_penulis',
+        //INSENTIF
+        
+        'nama_jurnal',
+        'klaster',
+        'biaya_insentif',
+        //END INSENTIF
         'tahun',
         'status',
         'abstrak',
