@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\Fakultas; // PENTING: Import model Fakultas
-use App\Models\Penelitian;
+use App\Models\Fakultas;
+use App\Models\TahunPenelitian;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,67 +17,37 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('nasya123'),
         ]);
 
-        $fitk = Fakultas::create([
-            'nama' => 'Fakultas Ilmu Tarbiyah dan Keguruan',
-            'kode' => 'FITK',
-        ]);
-
-        $fah = Fakultas::create([
-            'nama' => 'Fakultas Adab dan Humaniora',
-            'kode' => 'FAH',
-        ]);
-
-        $lainnya = Fakultas::create([
-            'nama' => 'Fakultas Lainnya',
-            'kode' => 'LAIN',
-        ]);
-
-        $daftarPenelitian = [
-            [
-                'judul' => 'Pengembangan Metode Pembelajaran Aktif di Kelas',
-                'fakultas_id' => $fitk->id, // Gunakan ID dari variabel di atas
-                'fakultas' => $fitk->nama,
-                'penulis_utama' => 'Ahmad Fulan',
-                'anggota_penulis' => 'Siti Aminah; Budi Santoso',
-                'tahun' => 2021,
-                'status' => 'Selesai',
-                'abstrak' => 'Penelitian tentang penerapan metode pembelajaran aktif...',
-            ],
-            [
-                'judul' => 'Kajian Naskah Klasik Arab di Indonesia',
-                'fakultas_id' => $fah->id,
-                'fakultas' => $fah->nama,
-                'penulis_utama' => 'Nur Aisyah',
-                'anggota_penulis' => 'Muhammad Ali',
-                'tahun' => 2022,
-                'status' => 'Selesai',
-                'abstrak' => 'Analisis filologis terhadap naskah klasik...',
-            ],
-            [
-                'judul' => 'Digitalisasi Kurikulum Pendidikan Islam',
-                'fakultas_id' => $fitk->id,
-                'fakultas' => $fitk->nama,
-                'penulis_utama' => 'Rizki Pratama',
-                'anggota_penulis' => null,
-                'tahun' => 2023,
-                'status' => 'Proses',
-                'abstrak' => 'Studi pengembangan kurikulum digital...',
-            ],
-            [
-                'judul' => 'Studi Komparatif Sastra Timur Tengah',
-                'fakultas_id' => $fah->id,
-                'fakultas' => $fah->nama,
-                'penulis_utama' => 'Laila Hasanah',
-                'anggota_penulis' => 'Farid Rahman',
-                'tahun' => 2024,
-                'status' => 'Selesai',
-                'abstrak' => 'Perbandingan tema-tema utama dalam sastra Timur Tengah...',
-            ],
+        $years = [
+            ['tahun' => '2021', 'isActive' => 1],
+            ['tahun' => '2022', 'isActive' => 0],
+            ['tahun' => '2023', 'isActive' => 0],
+            ['tahun' => '2024', 'isActive' => 0],
+            ['tahun' => '2025', 'isActive' => 0],
         ];
 
-        // 4. Masukkan Data ke Database
-        foreach ($daftarPenelitian as $data) {
-            Penelitian::create($data);
+        foreach ($years as $year) {
+            TahunPenelitian::create($year);
+        }
+
+        $fakultasData = [
+            ['nama' => 'Fakultas Ilmu Tarbiyah dan Keguruan', 'kode' => 'FITK' ],
+            ['nama' => 'Fakultas Adab dan Humaniora', 'kode' => 'FAH'],
+            ['nama' => 'Fakultas Ushuludin', 'kode' => 'FU'],
+            ['nama' => 'Fakultas Syariah dan Hukum', 'kode' => 'FSH'],
+            ['nama' => 'Fakultas Ilmu Dakwah dan Komunikasi', 'kode' => 'FIDK'],
+            ['nama' => 'Fakultas Dirasat Islamiyah', 'kode' => 'FDI'],
+            ['nama' => 'Fakultas Psikologi', 'kode' => 'Psikologi'],
+            ['nama' => 'Fakultas Ekonomi dan Bisnis', 'kode' => 'FEB'],
+            ['nama' => 'Fakultas Sains dan Teknologi', 'kode' => 'FST'],
+            ['nama' => 'Fakultas Ilmu Kesehatan', 'kode' => 'FIKES'],
+            ['nama' => 'Fakultas Kedokteran', 'kode' => 'FK'],
+            ['nama' => 'Fakultas Ilmu Sosial dan Ilmu Politik', 'kode' => 'FISIP'],
+            ['nama' => 'Sekolah Pasca Sarjana', 'kode' => 'SPS'],
+            ['nama' => 'Unit Lain', 'kode' => 'LAIN'],
+        ];
+
+        foreach ($fakultasData as $fakultas) {
+            Fakultas::create($fakultas);
         }
     }
 }
