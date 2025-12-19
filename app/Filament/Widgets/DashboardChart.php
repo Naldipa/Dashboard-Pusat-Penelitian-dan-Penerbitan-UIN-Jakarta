@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Penelitian;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Pages\PenelitianByFakultas;
 
 class DashboardStats extends BaseWidget
 {
@@ -46,27 +47,32 @@ class DashboardStats extends BaseWidget
             Stat::make('Penelitian', $countPenelitian)
                 ->description('Total penelitian aktif')
                 ->descriptionIcon('heroicon-m-beaker')
-                ->color('primary'),
+                ->color('primary')
+                ->url('/admin/penelitian'),
 
             Stat::make('Insentif', $countInsentif)
                 ->description('Jumlah insentif diberikan')
                 ->descriptionIcon('heroicon-m-currency-dollar')
-                ->color('success'),
+                ->color('success')
+                ->url('/admin/insentif'),
 
             Stat::make('Tagihan Publikasi', $countTagihan)
                 ->description('Tagihan yang diajukan')
                 ->descriptionIcon('heroicon-m-document-text')
-                ->color('warning'),
+                ->color('warning')
+                ->url('/admin/insentif'),
 
             Stat::make('Bantuan Buku', $countBuku)
                 ->description('Buku diterbitkan')
                 ->descriptionIcon('heroicon-m-book-open')
-                ->color('danger'),
+                ->color('danger')
+                ->url('/admin/insentif'),
 
             Stat::make('Registrasi Artikel', $countRegister)
                 ->description('Artikel terdaftar')
                 ->descriptionIcon('heroicon-m-pencil-square')
-                ->color('info'),
+                ->color('info')
+                ->url('/admin/insentif'),
         ];
     }
 }
