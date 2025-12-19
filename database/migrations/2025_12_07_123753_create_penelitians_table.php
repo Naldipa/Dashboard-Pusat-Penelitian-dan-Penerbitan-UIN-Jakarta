@@ -11,13 +11,14 @@ return new class extends Migration
         Schema::create('penelitians', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
-            $table->string('fakultas');
+            $table->string('fakultas')->nullable();
             $table->string('penulis_utama');
             $table->string('anggota_penulis')->nullable(); // bisa kosong
             $table->integer('tahun'); // 2021–2025
             $table->string('status')->nullable(); // contoh: "Selesai", "Proses", dll
             $table->text('abstrak')->nullable();
             $table->string('file_path')->nullable();
+            $table->string('id_register')->nullable();
             $table->timestamps();
         });
     }
