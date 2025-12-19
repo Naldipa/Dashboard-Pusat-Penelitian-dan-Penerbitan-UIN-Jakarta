@@ -89,6 +89,8 @@ class Insentif extends Page
                 }
 
 
+                error_log($data['klaster']);
+
                 Penelitian::create([
                     'judul'           => $data['judul'],
                     'penulis_utama'   => $data['nama'] ?? 'Anonim',
@@ -112,7 +114,7 @@ class Insentif extends Page
 
             // Reset & reload
             $this->reset('fileExcel');
-            // $this->loadData(); // Uncomment if you have a method to refresh the table list
+            $this->loadData();
 
             Notification::make()
                 ->title('Import Berhasil')

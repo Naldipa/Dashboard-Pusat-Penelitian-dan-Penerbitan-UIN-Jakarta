@@ -2,50 +2,71 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Widgets\ChartWidget;
+use App\Models\Penelitian;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class DashboardChart extends ChartWidget
+class DashboardStats extends BaseWidget
 {
-    protected ?string $heading = 'Total Kumulatif 5 Tahun';
+    public string|int|null $filterYear = 'all';
 
-    protected function getData(): array
+    protected function getStats(): array
     {
-        $years = [2021, 2022, 2023, 2024, 2025];
+        $query = Penelitian::query();
+
+        if ($this->filterYear !== 'all') {
+            $query->where('tahun', $this->filterYear);
+            $desc = "Periode " . $this->filterYear;
+        } else {
+            $desc = "Semua Periode";
+        }
+
+        $countPenelitian = (clone $query)->count();
+
+        $countInsentif = (clone $query)
+            ->where(function($q) {
+                $q->whereNotNull('klaster')
+                  ->orWhereNotNull('biaya_insentif');
+            })
+            ->count();
+
+        $countTagihan = (clone $query)
+            ->whereNotNull('nama_jurnal')
+            ->count();
+
+        $countBuku = (clone $query)
+            ->where('klaster', 'LIKE', '%Buku%')
+            ->count();
+
+        $countRegister = (clone $query)
+            ->whereNotNull('id_register')
+            ->count();
 
         return [
-            'datasets' => [
-                [
-                    'label' => 'Penelitian',
-                    'data' => [50, 60, 70, 40, 80],
-                    'backgroundColor' => '#6366F1',
-                ],
-                [
-                    'label' => 'Insentif',
-                    'data' => [100, 120, 150, 90, 160],
-                    'backgroundColor' => '#10B981',
-                ],
-                [
-                    'label' => 'Tagihan',
-                    'data' => [35, 40, 50, 30, 60],
-                    'backgroundColor' => '#FACC15',
-                ],
-                [
-                    'label' => 'Buku',
-                    'data' => [15, 20, 10, 5, 25],
-                    'backgroundColor' => '#EF4444',
-                ],
-                [
-                    'label' => 'Registrasi',
-                    'data' => [45, 55, 60, 50, 70],
-                    'backgroundColor' => '#A855F7',
-                ],
-            ],
-            'labels' => $years,
-        ];
-    }
+            Stat::make('Penelitian', $countPenelitian)
+                ->description('Total penelitian aktif')
+                ->descriptionIcon('heroicon-m-beaker')
+                ->color('primary'),
 
-    protected function getType(): string
-    {
-        return 'bar';
+            Stat::make('Insentif', $countInsentif)
+                ->description('Jumlah insentif diberikan')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('success'),
+
+            Stat::make('Tagihan Publikasi', $countTagihan)
+                ->description('Tagihan yang diajukan')
+                ->descriptionIcon('heroicon-m-document-text')
+                ->color('warning'),
+
+            Stat::make('Bantuan Buku', $countBuku)
+                ->description('Buku diterbitkan')
+                ->descriptionIcon('heroicon-m-book-open')
+                ->color('danger'),
+
+            Stat::make('Registrasi Artikel', $countRegister)
+                ->description('Artikel terdaftar')
+                ->descriptionIcon('heroicon-m-pencil-square')
+                ->color('info'),
+        ];
     }
 }
