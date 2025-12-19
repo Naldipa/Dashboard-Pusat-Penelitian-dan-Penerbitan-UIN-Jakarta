@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Penelitian;
 use App\Filament\Pages\PenelitianByFakultas;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -11,33 +12,35 @@ use App\Filament\Pages\Insentif;
 class DashboardStats extends BaseWidget
 {
     protected ?string $heading = null;
+    public string|int|null $filterYear = 'all';
 
     protected function getStats(): array
     {
+        $query = Penelitian::query();
+
+        if ($this->filterYear !== 'all') {
+            $query->where('tahun', $this->filterYear);
+            $label = "Periode " . $this->filterYear;
+        } else {
+            $label = "Semua Periode";
+        }
+
+        $total         = (clone $query)->count();
+        $totalDiterima = (clone $query)->whereIn('status', ['Selesai', 'Diterima', 'Disetujui', 'Dibayar'])->count();
+        $totalProses   = (clone $query)->whereIn('status', ['Proses', 'Perencanaan', 'Ditolak', 'Diproses'])->count();
+
         return [
-            Stat::make('Penelitian', 250)
-                ->description('Total penelitian aktif')
-                ->color('primary')
-                ->url(PenelitianByFakultas::getUrl())
-                ->extraAttributes(['class' => 'cursor-pointer']),
-
-            Stat::make('Insentif', 1500)
-                ->description('Jumlah insentif diberikan')
-                ->color('success')
-                ->url(Insentif::getUrl())
-                ->extraAttributes(['class' => 'cursor-pointer']),
-
-            Stat::make('Tagihan Publikasi', 180)
-                ->description('Tagihan yang diajukan')
-                ->color('warning'),
-
-            Stat::make('Bantuan Buku', 65)
-                ->description('Buku diterbitkan')
-                ->color('danger'),
-
-            Stat::make('Registrasi Artikel', 210)
-                ->description('Artikel terdaftar')
+            Stat::make('Total Proposal', $total)
+                ->description($label)
                 ->color('primary'),
+
+            Stat::make('Diterima / Selesai', $totalDiterima)
+                ->description('Status Selesai')
+                ->color('success'),
+
+            Stat::make('Dalam Proses', $totalProses)
+                ->description('Menunggu / Ditolak')
+                ->color('warning'),
         ];
     }
 }

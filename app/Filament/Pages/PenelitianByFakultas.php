@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Penelitian;
+use App\Models\TahunPenelitian;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Actions\Action;
@@ -71,13 +72,15 @@ class PenelitianByFakultas extends Page
                     ['nama' => 'Fakultas ' . $kodeFakultas]
                 );
 
+                $activeYear = TahunPenelitian::where('isActive', 1)->first()->tahun;
+
                 Penelitian::create([
                     'judul'           => $row[2] ?? 'Untitled',
                     'fakultas_id'     => $fakultas->id,
                     'fakultas' => $fakultas->nama,
                     'penulis_utama'   => $cleanName,
                     'anggota_penulis' => null,
-                    'tahun'           => date('Y'),
+                    'tahun'           => $activeYear,
                     'status'          => 'Proses',
                     'abstrak'         => $row[3] ?? null,
                 ]);

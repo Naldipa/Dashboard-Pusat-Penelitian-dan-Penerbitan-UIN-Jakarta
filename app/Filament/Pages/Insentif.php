@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Penelitian;
+use App\Models\TahunPenelitian;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Notifications\Notification;
@@ -61,56 +62,74 @@ class Insentif extends Page
         $header = null;
         $count  = 0;
 
-        while (($row = fgetcsv($handle, 0, ',')) !== false) {
+        DB::beginTransaction();
 
-            if ($header === null) {
-                $header = array_map(
-                    fn ($h) => Str::of($h)->lower()->trim()->toString(),
-                    $row
-                );
-                continue;
-            }
+        try {
+            $activeYear = TahunPenelitian::where('isActive', 1)->first()->tahun;
+            while (($row = fgetcsv($handle, 0, ',')) !== false) {
 
-            $data = [];
-            foreach ($row as $i => $value) {
-                $key = $header[$i] ?? null;
-                if ($key) {
-                    $data[$key] = trim($value);
+                if ($header === null) {
+                    $header = array_map(
+                        fn ($h) => Str::of($h)->lower()->trim()->toString(),
+                        $row
+                    );
+                    continue;
                 }
+
+                $data = [];
+                foreach ($row as $i => $value) {
+                    $key = $header[$i] ?? null;
+                    if ($key) {
+                        $data[$key] = trim($value);
+                    }
+                }
+
+                if (empty($data['judul'])) {
+                    continue;
+                }
+
+
+                Penelitian::create([
+                    'judul'           => $data['judul'],
+                    'penulis_utama'   => $data['nama'] ?? 'Anonim',
+                    'klaster'         => $data['klaster'] ?? null,
+                    'biaya_insentif'  => isset($data['biaya'])
+                        ? (int) preg_replace('/[^0-9]/', '', $data['biaya']) // Remove 'Rp', '.', etc
+                        : 0,
+                    'tahun'           => $activeYear,
+                    'anggota_penulis' => null,
+                    'nama_jurnal'     => null,
+                    'abstrak'         => null,
+                    'file_path'       => null,
+                    'id_register'     => null,
+                ]);
+
+                $count++;
             }
 
-            // Minimal validasi
-            if (empty($data['judul']) || empty($data['klaster'])) {
-                continue;
-            }
+            DB::commit();
+            fclose($handle);
 
-            Penelitian::create([
-                'penulis_utama'  => $data['nama'] ?? '-',
-                'judul'          => $data['judul'],
-                'nama_jurnal'    => $data['nama jurnal'] ?? null,
-                'klaster'        => $data['klaster'],
-                'biaya_insentif' => isset($data['biaya'])
-                    ? (int) preg_replace('/[^0-9]/', '', $data['biaya'])
-                    : null,
-                'fakultas'       => 'Unit Lain',
-                'tahun'          => 2021,
-                'status'         => 'Dibayar',
-            ]);
+            // Reset & reload
+            $this->reset('fileExcel');
+            // $this->loadData(); // Uncomment if you have a method to refresh the table list
 
-            $count++;
+            Notification::make()
+                ->title('Import Berhasil')
+                ->body("Berhasil mengimpor {$count} data insentif.")
+                ->success()
+                ->send();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            fclose($handle);
+
+            Notification::make()
+                ->title('Gagal Impor')
+                ->body('Terjadi kesalahan: ' . $e->getMessage())
+                ->danger()
+                ->send();
         }
-
-        fclose($handle);
-
-        // Reset & reload
-        $this->reset('fileExcel');
-        $this->loadData();
-
-        Notification::make()
-        ->title('Import Berhasil')
-        ->body("Berhasil mengimpor {$count} data insentif.")
-        ->success()
-        ->send();
     }
 
     public static function getNavigationGroup(): ?string

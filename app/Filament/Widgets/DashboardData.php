@@ -3,8 +3,10 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Penelitian;
+use App\Models\TahunPenelitian;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+
 
 class DashboardData extends ChartWidget
 {
@@ -12,9 +14,15 @@ class DashboardData extends ChartWidget
 
     protected ?string $pollingInterval = null;
 
+    public string|int|null $filterYear = 'all';
+
     protected function getData(): array
     {
-        $years = [2021, 2022, 2023, 2024, 2025];
+        if ($this->filterYear === 'all') {
+            $years = TahunPenelitian::orderBy('tahun', 'asc')->pluck('tahun')->toArray();
+        } else {
+            $years = [$this->filterYear];
+        }
 
         $statusDiterima = ['Selesai', 'Diterima', 'Disetujui', 'Dibayar'];
         $statusDitolak  = ['Proses', 'Perencanaan', 'Ditolak', 'Diproses', 'Tertunda'];
@@ -30,7 +38,6 @@ class DashboardData extends ChartWidget
 
         foreach ($years as $year) {
             $yearRecords = $rawData->where('tahun', $year);
-
             $dataDiterima[] = $yearRecords->whereIn('status', $statusDiterima)->sum('total');
             $dataDitolak[]  = $yearRecords->whereIn('status', $statusDitolak)->sum('total');
         }
@@ -38,13 +45,13 @@ class DashboardData extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Ditolak / Proses',
+                    'label' => 'Proses / Ditolak',
                     'data' => $dataDitolak,
                     'backgroundColor' => '#EF4444',
                     'barPercentage' => 0.5,
                 ],
                 [
-                    'label' => 'Diterima',
+                    'label' => 'Diterima / Selesai',
                     'data' => $dataDiterima,
                     'backgroundColor' => '#10B981',
                     'barPercentage' => 0.5,

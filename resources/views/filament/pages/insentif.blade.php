@@ -66,7 +66,7 @@
             {{-- SECTION: TABEL --}}
             <x-filament::section>
                 <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-white/10">
-                    <table class="w-full text-sm text-left text-gray-600 dark:text-gray-300">
+                    <table class="w-full text-sm text-left text-gray-200 dark:text-gray-300">
                         <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-800">
                             <tr>
                                 <th class="px-6 py-3">Klaster</th>
@@ -75,8 +75,8 @@
                         </thead>
                         <tbody>
                             @foreach ($klaster as $item)
-                                <tr class="border-b dark:border-gray-700">
-                                    <td class="px-6 py-3 font-medium text-gray-900 dark:text-white">
+                                <tr class="border-b dark:border-gray-700 px-6">
+                                    <td class="px-6 py-3 font-medium text-gray-200 dark:text-white">
                                         {{ $item['nama'] }}
                                     </td>
                                     <td class="px-6 py-3 text-right font-semibold">
