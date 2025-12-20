@@ -75,9 +75,14 @@
                         </thead>
                         <tbody>
                             @foreach ($klaster as $item)
-                                <tr class="border-b dark:border-gray-700 px-6">
+                                <tr class="border-b dark:border-gray-700 px-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                                     <td class="px-6 py-3 font-medium text-gray-200 dark:text-white">
-                                        {{ $item['nama'] }}
+                                        <a
+                                            href="{{ \App\Filament\Pages\InsentifData::getUrl(['klaster' => $item['nama']]) }}"
+                                            class="font-bold text-primary-600 hover:text-primary-500 hover:underline underline-offset-4"
+                                        >
+                                            {{ $item['nama'] }}
+                                        </a>
                                     </td>
                                     <td class="px-6 py-3 text-right font-semibold">
                                         {{ $item['jumlah'] }}

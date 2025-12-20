@@ -95,8 +95,8 @@ class Insentif extends Page
                     'judul'           => $data['judul'],
                     'penulis_utama'   => $data['nama'] ?? 'Anonim',
                     'klaster'         => $data['klaster'] ?? null,
-                    'biaya_insentif'  => isset($data['biaya'])
-                        ? (int) preg_replace('/[^0-9]/', '', $data['biaya']) // Remove 'Rp', '.', etc
+                    'biaya_insentif'  => isset($row[4])
+                        ? (int) preg_replace('/[^0-9]/', '', $row[4]) // Remove 'Rp', '.', etc
                         : 0,
                     'tahun'           => $activeYear,
                     'anggota_penulis' => null,
