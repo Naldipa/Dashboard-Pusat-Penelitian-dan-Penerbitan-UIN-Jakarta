@@ -14,6 +14,7 @@ use Livewire\WithFileUploads as LivewireWithFileUploads;
 
 class PenelitianByFakultas extends Page
 {
+
     use WithFileUploads;
 
     protected static ?string $slug = 'penelitian';
@@ -24,29 +25,42 @@ class PenelitianByFakultas extends Page
     public array $fakultas = [];
     public int $totalKeseluruhan = 0;
 
+    public $activeView = 'table';
+    public $selectedYear;
+    public $years = [];
+
     public function mount(): void
     {
-        $this->refreshStats();
+        $this->years = TahunPenelitian::orderBy('tahun', 'desc')->pluck('tahun')->toArray();
+
+        $activeYear = TahunPenelitian::where('isActive', 1)->first();
+        $this->selectedYear = $activeYear->tahun;
+
+        $this->loadData();
     }
 
-    public function refreshStats()
+    public function loadData()
     {
-        $data = Penelitian::query()
-            ->select('fakultas', DB::raw('count(*) as total'))
+        $this->fakultas = Penelitian::query()
+            ->select('fakultas', DB::raw('count(*) as jumlah'))
+            ->whereNotNull('fakultas')
+            ->where('tahun', $this->selectedYear)
             ->groupBy('fakultas')
-            ->orderBy('total', 'desc')
-            ->get();
-
-        $this->fakultas = $data->map(function ($item) {
-            return [
+            ->orderByDesc('jumlah')
+            ->get()
+            ->map(fn ($item) => [
                 'nama' => $item->fakultas,
-                'jumlah' => $item->total,
-            ];
-        })->toArray();
+                'jumlah' => $item->jumlah
+            ])
+            ->toArray();
 
-        $this->totalKeseluruhan = Penelitian::count();
+        $this->totalKeseluruhan = array_sum(array_column($this->fakultas, 'jumlah'));
     }
 
+    public function updatedSelectedYear()
+    {
+        $this->loadData();
+    }
     public function importData(): void
     {
         $this->validate([
@@ -89,7 +103,7 @@ class PenelitianByFakultas extends Page
             DB::commit();
 
             $this->reset('fileExcel');
-            $this->refreshStats();
+            $this->loadData();
             Notification::make()->title('Data Berhasil Diimpor')->success()->send();
 
         } catch (\Exception $e) {
