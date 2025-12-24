@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('article_registrations', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama');
+            $table->string('fakultas')->nullable();
+            $table->text('judul');
+            $table->decimal('jumlah_rp', 15, 2)->default(0);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('article_registrations');
+    }
+};

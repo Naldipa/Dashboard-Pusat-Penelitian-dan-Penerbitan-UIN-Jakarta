@@ -65,7 +65,7 @@
 
             {{-- SECTION: TABEL --}}
             <x-filament::section>
-                <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-white/10">
+                <div class="overflow-x-auto rounded-lg dark:border-white/10">
                     <table class="w-full text-sm text-left text-gray-200 dark:text-gray-300">
                         <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-800">
                             <tr>
