@@ -65,28 +65,13 @@ class ArticleRegistrationData extends Page
 
         DB::beginTransaction();
         try {
-            while (($row = fgetcsv($handle, 0, ',')) !== false) {
-                if ($header === null) {
-                    // Normalize headers: "Nama Lengkap" -> "nama_lengkap"
-                    $header = array_map(fn($h) => Str::snake(Str::lower(trim($h))), $row);
-                    continue;
-                }
-
-                $data = [];
-                foreach ($row as $i => $value) {
-                    $key = $header[$i] ?? null;
-                    if ($key) $data[$key] = trim($value);
-                }
-
-                if (empty($data['nama_lengkap']) && empty($data['judul_artikel_lengkap'])) continue;
-
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 ArticleRegistration::create([
-                    'nama'      => $data['nama_lengkap'] ?? 'Unknown',
-                    'fakultas'  => $data['fakultas'] ?? 'Unit Lain',
-                    'judul'     => $data['judul_artikel_lengkap'] ?? '-',
-                    // Clean "1.500.000" or "Rp 1.500.000" to "1500000"
-                    'jumlah_rp' => isset($data['jumlah_rp'])
-                        ? (float) preg_replace('/[^0-9]/', '', $data['jumlah_rp'])
+                    'nama'      => $row[0] ?? 'Unknown',
+                    'fakultas'  => $row[1] ?? 'Unit Lain',
+                    'judul'     => $row[2] ?? '-',
+                    'jumlah_rp' => isset($row[3])
+                        ? (float) preg_replace('/[^0-9]/', '', $row[3])
                         : 0,
                 ]);
 
