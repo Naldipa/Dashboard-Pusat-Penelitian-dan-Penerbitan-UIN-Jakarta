@@ -86,6 +86,7 @@ class ListPenelitians extends Page
 
                 Penelitian::create([
                     'judul'         => $row[2] ?? 'Untitled',
+                    'id_register'         => $row[1] ?? null,
                     'fakultas_id'   => $fakultas->id,
                     'fakultas'      => $fakultas->nama,
                     'penulis_utama' => $cleanName,
