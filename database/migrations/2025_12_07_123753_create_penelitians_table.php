@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('fakultas')->nullable();
             $table->string('penulis_utama');
             $table->string('anggota_penulis')->nullable();
-            $table->string('penulis_satu')->nullable();
+            $table->string('penulis_dua')->nullable();
             $table->string('penulis_tiga')->nullable();
             $table->string('jabatan')->nullable();
             $table->integer('tahun');

@@ -21,8 +21,8 @@ class PenelitianForm
                 TextInput::make('penulis_utama')
                     ->required(),
                 TextInput::make('anggota_penulis'),
-                TextInput::make('Penulis Satu'),
-                TextInput::make('Penulis Dua'),
+                TextInput::make('penulis_dua'),
+                TextInput::make('penulis_tiga'),
                 TextInput::make('tahun')
                     ->required()
                     ->numeric(),

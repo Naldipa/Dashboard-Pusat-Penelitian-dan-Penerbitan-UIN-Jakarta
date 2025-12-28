@@ -45,9 +45,9 @@ class PenelitianFakultasDetail extends Page implements HasTable
             )
             ->columns([
                 TextColumn::make('judul')->searchable()->wrap()->limit(60),
-                TextColumn::make('id_register')->sortable(),
+                TextColumn::make('id_register')->label('ID Register')->sortable(),
                 TextColumn::make('penulis_utama')->label('Penulis'),
-                TextColumn::make('jabatan'),
+                TextColumn::make('jabatan')->label('Jabatan'),
                 TextColumn::make('tahun')->sortable(),
                 TextColumn::make('status')
                     ->badge()

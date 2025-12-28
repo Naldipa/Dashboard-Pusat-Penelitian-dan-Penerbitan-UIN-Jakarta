@@ -18,6 +18,7 @@ class Penelitian extends Model
         'anggota_penulis',
         'penulis_dua',
         'penulis_tiga',
+        'jabatan',
         'nama_jurnal',
         'klaster',
         'biaya_insentif',
