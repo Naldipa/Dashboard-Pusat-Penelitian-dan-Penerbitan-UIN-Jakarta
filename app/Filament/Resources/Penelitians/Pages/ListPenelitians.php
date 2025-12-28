@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Penelitians\Pages;
 use App\Filament\Resources\Penelitians\PenelitianResource;
 use App\Models\Penelitian;
 use App\Models\TahunPenelitian;
-use Filament\Resources\Pages\Page; // Inherit from Page, not ListRecords, to allow custom view
+use Filament\Resources\Pages\Page;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithFileUploads;
@@ -19,6 +19,8 @@ class ListPenelitians extends Page
     protected ?string $heading = 'Data Penelitian Per Fakultas';
 
     protected string $view = 'filament.pages.list-penelitians';
+
+    public $activeView = 'table'; // 'table' or 'chart'
 
     public $fileExcel;
     public array $fakultas = [];
@@ -57,6 +59,7 @@ class ListPenelitians extends Page
     public function updatedSelectedYear()
     {
         $this->loadData();
+        // If chart is active, Livewire will automatically re-render the widget because we pass the year as key
     }
 
     public function importData(): void
@@ -86,7 +89,7 @@ class ListPenelitians extends Page
                     'fakultas_id'   => $fakultas->id,
                     'fakultas'      => $fakultas->nama,
                     'penulis_utama' => $cleanName,
-                    'tahun'         => $this->selectedYear, // Use selected year for import context
+                    'tahun'         => $this->selectedYear,
                     'status'        => 'Proses',
                     'abstrak'       => $row[3] ?? null,
                 ]);

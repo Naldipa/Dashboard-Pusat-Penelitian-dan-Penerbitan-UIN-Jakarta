@@ -5,11 +5,14 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use App\Models\TahunPenelitian;
 use BackedEnum;
+use Filament\Support\Icons\Heroicon;
 
 class DashboardRiset extends Page
 {
     protected static ?string $title = 'Pusat Penelitian dan Penerbitan UIN Jakarta';
     protected string $view = 'filament.pages.dashboard-riset';
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Home;
 
     public $years = [];
     public $selectedYear;

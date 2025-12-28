@@ -10,6 +10,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Actions\Action; // For Edit/Delete if needed
 use Illuminate\Http\Request;
+use UnitEnum;
 
 class InsentifData extends Page implements HasTable
 {
@@ -17,6 +18,7 @@ class InsentifData extends Page implements HasTable
 
     protected static ?string $slug = 'insentif-data';
     protected static ?string $title = 'Detail Klaster Insentif';
+    protected static string|UnitEnum|null $navigationGroup = "Insentif";
 
     protected string $view = 'filament.pages.insentif-data';
 

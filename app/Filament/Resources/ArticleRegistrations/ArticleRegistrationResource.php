@@ -9,6 +9,7 @@ use App\Filament\Resources\ArticleRegistrations\Schemas\ArticleRegistrationForm;
 use App\Filament\Resources\ArticleRegistrations\Tables\ArticleRegistrationsTable;
 use App\Models\ArticleRegistration;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -19,6 +20,7 @@ class ArticleRegistrationResource extends Resource
     protected static ?string $model = ArticleRegistration::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = "Artikel";
 
     protected static ?string $recordTitleAttribute = 'judul';
 
