@@ -15,18 +15,19 @@ class PenelitianForm
                 TextInput::make('judul')
                     ->required(),
                 TextInput::make('nama_jurnal'),
-                TextInput::make('klaster'),
                 TextInput::make('biaya_insentif')
                     ->numeric(),
                 TextInput::make('fakultas'),
                 TextInput::make('penulis_utama')
                     ->required(),
                 TextInput::make('anggota_penulis'),
+                TextInput::make('Penulis Satu'),
+                TextInput::make('Penulis Dua'),
                 TextInput::make('tahun')
                     ->required()
                     ->numeric(),
                 TextInput::make('status'),
-                Textarea::make('abstrak')
+                Textarea::make('klaster')
                     ->columnSpanFull(),
                 TextInput::make('file_path'),
                 TextInput::make('id_register'),

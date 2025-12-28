@@ -45,7 +45,9 @@ class PenelitianFakultasDetail extends Page implements HasTable
             )
             ->columns([
                 TextColumn::make('judul')->searchable()->wrap()->limit(60),
+                TextColumn::make('id_register')->sortable(),
                 TextColumn::make('penulis_utama')->label('Penulis'),
+                TextColumn::make('jabatan'),
                 TextColumn::make('tahun')->sortable(),
                 TextColumn::make('status')
                     ->badge()
@@ -65,6 +67,10 @@ class PenelitianFakultasDetail extends Page implements HasTable
                     ->form([
                         TextInput::make('judul')->required()->columnSpan(2),
                         TextInput::make('penulis_utama')->required(),
+                        TextInput::make('tahun')->numeric()->required(),
+                        TextInput::make('penulis_dua')->string(),
+                        TextInput::make('penulis_tiga')->string(),
+                        TextInput::make('jabatan')->string(),
                         TextInput::make('tahun')->numeric()->required(),
                         Select::make('status')
                             ->options([

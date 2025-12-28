@@ -6,7 +6,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Grid;
 
 class BookReferenceForm
@@ -38,8 +38,6 @@ class BookReferenceForm
                     ->schema([
                         TextInput::make('isbn')->label('ISBN'),
                         TextInput::make('e_isbn')->label('E-ISBN'),
-                        TextInput::make('isbn_fk')->label('ISBN FK'),
-                        TextInput::make('e_isbn_fk')->label('E-ISBN FK'),
 
                         TextInput::make('tahun')
                             ->label('Tahun')

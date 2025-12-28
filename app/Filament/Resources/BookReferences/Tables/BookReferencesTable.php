@@ -27,11 +27,6 @@ class BookReferenceTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('penulis')
-                    ->label('Penulis')
-                    ->limit(30)
-                    ->searchable(),
-
                 TextColumn::make('isbn')
                     ->label('ISBN')
                     ->searchable()
