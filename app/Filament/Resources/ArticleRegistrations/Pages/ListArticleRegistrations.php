@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Resources\ArticleRegistrations\Pages;
 
+use App\Filament\Resources\ArticleRegistrations\ArticleRegistrationResource;
 use App\Models\ArticleRegistration;
-use Filament\Pages\Page;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 
-class ArticleRegistrationData extends Page
+class ListArticleRegistrations extends ListRecords
 {
     use WithFileUploads;
 
-    protected static ?string $navigationLabel = 'Registrasi Artikel';
-    protected static ?string $title = 'Data Registrasi Artikel';
-    protected static ?string $slug = 'registrasi-artikel';
+    protected static string $resource = ArticleRegistrationResource::class;
 
-    protected string $view = 'filament.pages.article-registration-data';
+    protected string $view = 'filament.pages.list-article-registrations';
 
     public $fileExcel;
     public $isImportOpen = false;
@@ -26,8 +24,9 @@ class ArticleRegistrationData extends Page
     public $totalKeseluruhan = 0;
     public $totalUang = 0;
 
-    public function mount()
+    public function mount(): void
     {
+        parent::mount();
         $this->loadData();
     }
 
@@ -58,11 +57,11 @@ class ArticleRegistrationData extends Page
         ]);
 
         $handle = fopen($this->fileExcel->getRealPath(), 'r');
-        $header = null;
         $count = 0;
 
         DB::beginTransaction();
         try {
+            // Logic taken from your original ArticleRegistrationData
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
                 ArticleRegistration::create([
                     'nama'      => $row[0] ?? 'Unknown',
@@ -79,13 +78,13 @@ class ArticleRegistrationData extends Page
             DB::commit();
             fclose($handle);
             $this->reset(['fileExcel', 'isImportOpen']);
-            $this->loadData(); // Refresh table
+            $this->loadData(); // Refresh summary and table
 
             Notification::make()->title("Berhasil import {$count} artikel.")->success()->send();
 
         } catch (\Exception $e) {
             DB::rollBack();
-            fclose($handle);
+            if (isset($handle)) fclose($handle);
             Notification::make()->title('Gagal')->body($e->getMessage())->danger()->send();
         }
     }
