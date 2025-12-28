@@ -79,7 +79,7 @@ class PenelitianFakultasDetail extends Page implements HasTable
                                 'Diterima' => 'Diterima',
                                 'Ditolak' => 'Ditolak',
                             ])->required(),
-                        Textarea::make('abstrak')->rows(3)->columnSpan(2),
+                        Textarea::make('klaster')->rows(3)->columnSpan(2),
                     ])
                     ->fillForm(fn (Penelitian $record): array => $record->attributesToArray())
                     ->action(function (Penelitian $record, array $data): void {
