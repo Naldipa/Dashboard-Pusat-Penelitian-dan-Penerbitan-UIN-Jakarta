@@ -21,7 +21,7 @@ class BookReferenceResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::BookOpen;
 
-    protected static string|UnitEnum|null $navigationGroup = "Publikasi";
+    protected static string|UnitEnum|null $navigationGroup = "Buku Referensi";
 
     protected static ?string $navigationLabel = 'Referensi Buku';
 

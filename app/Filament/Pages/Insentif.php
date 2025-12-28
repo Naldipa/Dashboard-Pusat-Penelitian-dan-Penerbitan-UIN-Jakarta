@@ -136,6 +136,6 @@ class Insentif extends Page
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Riset & Publikasi';
+        return 'Insentif';
     }
 }

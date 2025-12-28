@@ -1,33 +1,38 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Resources\Penelitians\Pages;
 
+use App\Filament\Resources\Penelitians\PenelitianResource;
 use App\Models\Penelitian;
-use Filament\Pages\Page;
+use Filament\Resources\Pages\Page;
 use Filament\Tables\Table;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Actions\Action; // <--- The generic Action class you wanted
+use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
-use Illuminate\Http\Request;
 
 class PenelitianFakultasDetail extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $slug = 'penelitian-fakultas';
+    protected static string $resource = PenelitianResource::class;
+
     protected string $view = 'filament.pages.penelitian-fakultas-detail';
 
-    public string $fakultas = '';
-    protected $queryString = ['fakultas'];
+    public $fakultas;
 
-    public function mount(Request $request): void
+    public function mount($fakultas): void
     {
-        $this->fakultas = $request->query('fakultas', '');
+        $this->fakultas = $fakultas;
+    }
+
+    public function getHeading(): string
+    {
+        return $this->fakultas;
     }
 
     public function table(Table $table): Table
@@ -39,8 +44,8 @@ class PenelitianFakultasDetail extends Page implements HasTable
                     ->orderByDesc('tahun')
             )
             ->columns([
-                TextColumn::make('judul')->searchable()->wrap(),
-                TextColumn::make('penulis_utama'),
+                TextColumn::make('judul')->searchable()->wrap()->limit(60),
+                TextColumn::make('penulis_utama')->label('Penulis'),
                 TextColumn::make('tahun')->sortable(),
                 TextColumn::make('status')
                     ->badge()
@@ -51,14 +56,12 @@ class PenelitianFakultasDetail extends Page implements HasTable
                         default => 'gray',
                     }),
             ])
-            // THIS IS THE PART YOU WANTED
             ->recordActions([
                 Action::make('edit')
                     ->icon('heroicon-m-pencil-square')
-                    ->label('Edit Data')
+                    ->label('Edit')
                     ->modalWidth('2xl')
                     ->modalHeading('Edit Penelitian')
-                    // 1. Define the form schema directly on the generic action
                     ->form([
                         TextInput::make('judul')->required()->columnSpan(2),
                         TextInput::make('penulis_utama')->required(),
@@ -72,15 +75,12 @@ class PenelitianFakultasDetail extends Page implements HasTable
                             ])->required(),
                         Textarea::make('abstrak')->rows(3)->columnSpan(2),
                     ])
-                    // 2. Load the data into the form
                     ->fillForm(fn (Penelitian $record): array => $record->attributesToArray())
-                    // 3. Handle the save logic
                     ->action(function (Penelitian $record, array $data): void {
                         $record->update($data);
                         Notification::make()->title('Data berhasil disimpan')->success()->send();
                     }),
 
-                // Example of a Delete action using the same generic pattern
                 Action::make('delete')
                     ->icon('heroicon-m-trash')
                     ->color('danger')

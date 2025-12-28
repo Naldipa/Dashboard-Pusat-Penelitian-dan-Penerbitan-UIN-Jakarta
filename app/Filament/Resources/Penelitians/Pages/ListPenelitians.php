@@ -1,31 +1,28 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Resources\Penelitians\Pages;
 
+use App\Filament\Resources\Penelitians\PenelitianResource;
 use App\Models\Penelitian;
 use App\Models\TahunPenelitian;
+use Filament\Resources\Pages\Page; // Inherit from Page, not ListRecords, to allow custom view
 use Filament\Notifications\Notification;
-use Filament\Pages\Page;
-use Filament\Actions\Action;
-use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\DB;
-use Livewire\Features\SupportFileUploads\WithFileUploads;
-use Livewire\WithFileUploads as LivewireWithFileUploads;
+use Livewire\WithFileUploads;
 
-class PenelitianByFakultas extends Page
+class ListPenelitians extends Page
 {
-
     use WithFileUploads;
 
-    protected static ?string $slug = 'penelitian';
-    protected string $view = 'filament.pages.penelitian-by-fakultas';
+    protected static string $resource = PenelitianResource::class;
+
+    protected ?string $heading = 'Data Penelitian Per Fakultas';
+
+    protected string $view = 'filament.pages.list-penelitians';
 
     public $fileExcel;
-
     public array $fakultas = [];
     public int $totalKeseluruhan = 0;
-
-    public $activeView = 'table';
     public $selectedYear;
     public $years = [];
 
@@ -34,7 +31,7 @@ class PenelitianByFakultas extends Page
         $this->years = TahunPenelitian::orderBy('tahun', 'desc')->pluck('tahun')->toArray();
 
         $activeYear = TahunPenelitian::where('isActive', 1)->first();
-        $this->selectedYear = $activeYear->tahun;
+        $this->selectedYear = $activeYear->tahun ?? date('Y');
 
         $this->loadData();
     }
@@ -61,6 +58,7 @@ class PenelitianByFakultas extends Page
     {
         $this->loadData();
     }
+
     public function importData(): void
     {
         $this->validate([
@@ -69,16 +67,13 @@ class PenelitianByFakultas extends Page
 
         $path = $this->fileExcel->getRealPath();
         $handle = fopen($path, 'r');
-
-        fgetcsv($handle);
+        fgetcsv($handle); // Skip header
 
         DB::beginTransaction();
         try {
             while (($row = fgetcsv($handle, 1000, ',')) !== false) {
-
                 $rawName = $row[0] ?? 'Anonim';
                 $cleanName = trim(str_ireplace('(KETUA)', '', $rawName));
-
                 $kodeFakultas = isset($row[4]) ? trim($row[4]) : 'N/A';
 
                 $fakultas = \App\Models\Fakultas::firstOrCreate(
@@ -86,35 +81,26 @@ class PenelitianByFakultas extends Page
                     ['nama' => 'Fakultas ' . $kodeFakultas]
                 );
 
-                $activeYear = TahunPenelitian::where('isActive', 1)->first()->tahun;
-
                 Penelitian::create([
-                    'judul'           => $row[2] ?? 'Untitled',
-                    'fakultas_id'     => $fakultas->id,
-                    'fakultas' => $fakultas->nama,
-                    'penulis_utama'   => $cleanName,
-                    'anggota_penulis' => null,
-                    'tahun'           => $activeYear,
-                    'status'          => 'Proses',
-                    'abstrak'         => $row[3] ?? null,
+                    'judul'         => $row[2] ?? 'Untitled',
+                    'fakultas_id'   => $fakultas->id,
+                    'fakultas'      => $fakultas->nama,
+                    'penulis_utama' => $cleanName,
+                    'tahun'         => $this->selectedYear, // Use selected year for import context
+                    'status'        => 'Proses',
+                    'abstrak'       => $row[3] ?? null,
                 ]);
             }
 
             DB::commit();
-
             $this->reset('fileExcel');
             $this->loadData();
             Notification::make()->title('Data Berhasil Diimpor')->success()->send();
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Notification::make()
-                ->title('Gagal Impor')
-                ->body('Error pada baris data: ' . $e->getMessage())
-                ->danger()
-                ->send();
+            Notification::make()->title('Gagal Impor')->body($e->getMessage())->danger()->send();
         }
-
         fclose($handle);
     }
 }

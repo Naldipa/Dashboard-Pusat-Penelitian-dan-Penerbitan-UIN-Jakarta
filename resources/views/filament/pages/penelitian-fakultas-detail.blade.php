@@ -1,25 +1,22 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        {{-- Header --}}
+        {{-- Header & Back Button --}}
         <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">
+            <h2 class="text-xl font-bold tracking-tight text-gray-950 dark:text-white hidden">
                 {{ $fakultas }}
             </h2>
             <x-filament::button
                 color="gray"
                 tag="a"
-                href="{{ \App\Filament\Pages\PenelitianByFakultas::getUrl() }}"
+                {{-- Go back to the Index page of the Resource --}}
+                href="{{ \App\Filament\Resources\Penelitians\PenelitianResource::getUrl('index') }}"
                 icon="heroicon-m-chevron-left"
             >
-                Kembali
+                Kembali ke Rekapitulasi
             </x-filament::button>
         </div>
 
-        {{--
-           THIS IS THE MAGIC LINE.
-           It renders the search bar, the table, pagination,
-           and the Edit Modals all automatically.
-        --}}
+        {{-- FILAMENT TABLE RENDER --}}
         {{ $this->table }}
 
     </div>
