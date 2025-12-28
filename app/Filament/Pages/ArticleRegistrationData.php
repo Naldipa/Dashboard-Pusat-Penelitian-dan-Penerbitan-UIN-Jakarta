@@ -22,7 +22,6 @@ class ArticleRegistrationData extends Page
     public $fileExcel;
     public $isImportOpen = false;
 
-    // Data properties
     public $fakultasSummary = [];
     public $totalKeseluruhan = 0;
     public $totalUang = 0;
@@ -34,7 +33,6 @@ class ArticleRegistrationData extends Page
 
     public function loadData()
     {
-        // Aggregate data by Fakultas
         $this->fakultasSummary = ArticleRegistration::query()
             ->select('fakultas', DB::raw('count(*) as jumlah'), DB::raw('sum(jumlah_rp) as total_rp'))
             ->whereNotNull('fakultas')
