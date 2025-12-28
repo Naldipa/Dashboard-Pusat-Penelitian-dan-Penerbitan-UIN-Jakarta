@@ -22,6 +22,11 @@ class Insentif extends Page
 
     protected string $view = 'filament.pages.insentif';
 
+    /** View State */
+    public $activeView = 'table';
+    public $selectedYear;
+    public $years = [];
+
     /** Upload CSV */
     public $fileExcel;
 
@@ -30,6 +35,18 @@ class Insentif extends Page
     public int $totalKeseluruhan = 0;
 
     public function mount(): void
+    {
+        // Load available years
+        $this->years = TahunPenelitian::orderBy('tahun', 'desc')->pluck('tahun')->toArray();
+
+        // Set default year
+        $activeYear = TahunPenelitian::where('isActive', 1)->first();
+        $this->selectedYear = $activeYear->tahun ?? date('Y');
+
+        $this->loadData();
+    }
+
+    public function updatedSelectedYear()
     {
         $this->loadData();
     }
@@ -40,6 +57,7 @@ class Insentif extends Page
                 DB::raw('COALESCE(klaster, "Tidak Ditentukan") as klaster'),
                 DB::raw('COUNT(*) as total')
             )
+            ->where('tahun', $this->selectedYear) // Filter by Year
             ->groupBy('klaster')
             ->orderBy('klaster')
             ->get();
@@ -65,7 +83,9 @@ class Insentif extends Page
         DB::beginTransaction();
 
         try {
-            $activeYear = TahunPenelitian::where('isActive', 1)->first()->tahun;
+            // Use selected year for import context
+            $importYear = $this->selectedYear;
+
             while (($row = fgetcsv($handle, 0, ',')) !== false) {
 
                 if ($header === null) {
@@ -88,15 +108,14 @@ class Insentif extends Page
                     continue;
                 }
 
-
                 Penelitian::create([
                     'judul'           => $data['judul'],
                     'penulis_utama'   => $data['nama'] ?? 'Anonim',
-                    'klaster'         => $data['kategori'] ?? null,
+                    'klaster'         => $data['klaster'] ?? null,
                     'biaya_insentif'  => isset($row[4])
-                        ? (int) preg_replace('/[^0-9]/', '', $row[4]) // Remove 'Rp', '.', etc
+                        ? (int) preg_replace('/[^0-9]/', '', $row[4])
                         : 0,
-                    'tahun'           => $activeYear,
+                    'tahun'           => $importYear,
                     'anggota_penulis' => null,
                     'nama_jurnal'     => null,
                     'abstrak'         => null,
@@ -110,7 +129,6 @@ class Insentif extends Page
             DB::commit();
             fclose($handle);
 
-            // Reset & reload
             $this->reset('fileExcel');
             $this->loadData();
 
@@ -122,7 +140,7 @@ class Insentif extends Page
 
         } catch (\Exception $e) {
             DB::rollBack();
-            fclose($handle);
+            if (isset($handle)) fclose($handle);
 
             Notification::make()
                 ->title('Gagal Impor')
