@@ -21,6 +21,7 @@ class ArticleRegistrationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static string|UnitEnum|null $navigationGroup = "Artikel";
+    protected static ?string $navigationLabel = 'Registrasi Artikel';
 
     protected static ?string $recordTitleAttribute = 'judul';
 

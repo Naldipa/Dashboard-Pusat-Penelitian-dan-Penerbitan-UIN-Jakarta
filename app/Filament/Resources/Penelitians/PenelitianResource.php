@@ -17,6 +17,7 @@ class PenelitianResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static string|UnitEnum|null $navigationGroup = "Penelitian";
+    protected static ?string $navigationLabel = 'Penelitian';
 
     protected static ?string $recordTitleAttribute = 'judul';
 

@@ -21,6 +21,7 @@ class TagihanPublikasiResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static string|UnitEnum|null $navigationGroup = "Publikasi";
+    protected static ?string $navigationLabel = 'Tagihan Publikasi';
 
     protected static ?string $recordTitleAttribute = 'TagihanPublikasi';
 
