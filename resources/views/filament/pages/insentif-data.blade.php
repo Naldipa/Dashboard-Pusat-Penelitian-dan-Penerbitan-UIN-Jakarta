@@ -3,7 +3,7 @@
         {{-- Header with Back Button --}}
         <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold tracking-tight text-gray-950 dark:text-white">
-                Klaster: {{ $klaster }}
+                Kategori: {{ $klaster }}
             </h2>
 
             <x-filament::button

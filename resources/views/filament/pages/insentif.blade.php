@@ -69,7 +69,7 @@
                     <table class="w-full text-sm text-left text-gray-200 dark:text-gray-300">
                         <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-800">
                             <tr>
-                                <th class="px-6 py-3">Klaster</th>
+                                <th class="px-6 py-3">Kategori</th>
                                 <th class="px-6 py-3 text-right">Total Dokumen</th>
                             </tr>
                         </thead>

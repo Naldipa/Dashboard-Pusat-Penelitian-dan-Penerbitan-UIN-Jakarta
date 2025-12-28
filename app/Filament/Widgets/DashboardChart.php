@@ -3,6 +3,9 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Penelitian;
+use App\Models\BookReference;
+use App\Models\ArticleRegistration;
+use App\Models\TagihanPublikasi;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Pages\PenelitianByFakultas;
@@ -31,24 +34,16 @@ class DashboardStats extends BaseWidget
             })
             ->count();
 
-        $countTagihan = (clone $query)
-            ->whereNotNull('nama_jurnal')
-            ->count();
+        $countTagihan = TagihanPublikasi::count();
+        $countBook = BookReference::count();
 
-        $countBuku = (clone $query)
-            ->where('klaster', 'LIKE', '%Buku%')
-            ->count();
-
-        $countRegister = (clone $query)
-            ->whereNotNull('id_register')
-            ->count();
-
+        $countRegister = ArticleRegistration::count();
         return [
             Stat::make('Penelitian', $countPenelitian)
                 ->description('Total penelitian aktif')
                 ->descriptionIcon('heroicon-m-beaker')
                 ->color('primary')
-                ->url('/admin/penelitian'),
+                ->url('/admin/penelitians'),
 
             Stat::make('Insentif', $countInsentif)
                 ->description('Jumlah insentif diberikan')
@@ -60,19 +55,19 @@ class DashboardStats extends BaseWidget
                 ->description('Tagihan yang diajukan')
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('warning')
-                ->url('/admin/insentif'),
+                ->url('/admin/tagihan-publikasis'),
 
-            Stat::make('Bantuan Buku', $countBuku)
+            Stat::make('Bantuan Buku', $countBook)
                 ->description('Buku diterbitkan')
                 ->descriptionIcon('heroicon-m-book-open')
                 ->color('danger')
-                ->url('/admin/insentif'),
+                ->url('/admin/referensi-buku'),
 
             Stat::make('Registrasi Artikel', $countRegister)
                 ->description('Artikel terdaftar')
                 ->descriptionIcon('heroicon-m-pencil-square')
                 ->color('info')
-                ->url('/admin/insentif'),
+                ->url('/admin/article-registrations'),
         ];
     }
 }
