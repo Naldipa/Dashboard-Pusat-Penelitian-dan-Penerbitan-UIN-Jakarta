@@ -89,12 +89,10 @@ class Insentif extends Page
                 }
 
 
-                error_log($data['klaster']);
-
                 Penelitian::create([
                     'judul'           => $data['judul'],
                     'penulis_utama'   => $data['nama'] ?? 'Anonim',
-                    'klaster'         => $data['klaster'] ?? null,
+                    'klaster'         => $data['kategori'] ?? null,
                     'biaya_insentif'  => isset($row[4])
                         ? (int) preg_replace('/[^0-9]/', '', $row[4]) // Remove 'Rp', '.', etc
                         : 0,
