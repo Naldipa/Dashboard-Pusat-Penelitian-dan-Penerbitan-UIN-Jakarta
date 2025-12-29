@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Resources\TagihanPublikasis\Widgets\TagihanPublikasiChart;
 
 class TagihanPublikasiResource extends Resource
 {
@@ -36,6 +37,13 @@ class TagihanPublikasiResource extends Resource
             // Detail shows the records for a specific category
             // We use a custom slug parameter {category}
             'kategori' => TagihanPublikasiDetail::route('/kategori/{category}'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            TagihanPublikasiChart::class,
         ];
     }
 }

@@ -9,6 +9,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
+use App\Filament\Resources\TagihanPublikasis\Widgets\TagihanPublikasiChart;
 
 class ListTagihanPublikasis extends Page
 {
@@ -28,6 +29,13 @@ class ListTagihanPublikasis extends Page
     public function mount(): void
     {
         $this->loadData();
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            TagihanPublikasiChart::class,
+        ];
     }
 
     public function loadData()
