@@ -30,8 +30,8 @@ class InsentifKlasterChart extends ChartWidget
                 [
                     'label' => 'Jumlah Penelitian',
                     'data' => $data->pluck('total')->toArray(),
-                    'backgroundColor' => 'rgba(var(--primary-500), 0.8)',
-                    'borderColor' => 'rgb(var(--primary-600))',
+                    'backgroundColor' => '#f5930b',
+                    'borderColor' => '#d97706',
                     'borderWidth' => 1,
                 ],
             ],
