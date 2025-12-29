@@ -33,6 +33,10 @@ class TagihanPublikasiTable
                     ->searchable()
                     ->toggleable(),
 
+                TextColumn::make('kategori')
+                    ->searchable()
+                    ->toggleable(),
+
                 // Status Columns
                 TextColumn::make('artikel_jurnal')
                     ->label('Jurnal')

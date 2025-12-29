@@ -10,6 +10,7 @@ class TagihanPublikasi extends Model
         'no_reg',
         'judul',
         'ketua',
+        'kategori',
         'fakultas',
         'artikel_jurnal',
         'proceeding',

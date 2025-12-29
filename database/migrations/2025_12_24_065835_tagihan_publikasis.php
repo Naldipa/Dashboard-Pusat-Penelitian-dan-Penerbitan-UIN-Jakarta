@@ -14,7 +14,7 @@ return new class extends Migration
             $table->text('judul');
             $table->string('ketua'); // From "Ketua"
             $table->string('fakultas')->nullable();
-
+            $table->string('kategori')->nullable();
             $table->string('artikel_jurnal')->nullable()->default('belum ada');
             $table->string('proceeding')->nullable()->default('belum ada');
             $table->string('haki')->nullable()->default('belum ada');
