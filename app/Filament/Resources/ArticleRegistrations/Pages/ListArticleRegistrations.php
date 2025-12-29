@@ -8,6 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithFileUploads;
+use App\Filament\Resources\ArticleRegistrations\Widgets\ArticleRegistrationChart;
 
 class ListArticleRegistrations extends ListRecords
 {
@@ -28,6 +29,13 @@ class ListArticleRegistrations extends ListRecords
     {
         parent::mount();
         $this->loadData();
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            ArticleRegistrationChart::class,
+        ];
     }
 
     public function loadData()

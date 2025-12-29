@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Resources\ArticleRegistrations\Widgets\ArticleRegistrationChart;
 
 class ArticleRegistrationResource extends Resource
 {
@@ -48,6 +49,13 @@ class ArticleRegistrationResource extends Resource
             'index' => ListArticleRegistrations::route('/'),
             'create' => CreateArticleRegistration::route('/create'),
             'edit' => EditArticleRegistration::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ArticleRegistrationChart::class,
         ];
     }
 }
