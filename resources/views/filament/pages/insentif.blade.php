@@ -70,7 +70,7 @@
                         }}"
                     >
                         <x-filament::icon icon="heroicon-m-table-cells" class="h-4 w-4" />
-                        <span>Tabel Data XXX</span>
+                        <span>Tabel Data</span>
                     </button>
                     <button
                         wire:click="$set('activeView', 'chart')"
@@ -110,7 +110,7 @@
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
                                 <tr>
-                                    <th class="px-6 py-3">Klaster</th>
+                                    <th class="px-6 py-3">Kategori</th>
                                     <th class="px-6 py-3 text-right">Total Dokumen</th>
                                 </tr>
                             </thead>

@@ -55,7 +55,7 @@ class DashboardStats extends BaseWidget
                 ->description('Tagihan yang diajukan')
                 ->descriptionIcon('heroicon-m-document-text')
                 ->color('warning')
-                ->url('/admin/tagihan-publikasis'),
+                ->url('/admin/tagihan-publikasi'),
 
             Stat::make('Bantuan Buku', $countBook)
                 ->description('Buku diterbitkan')
