@@ -28,7 +28,7 @@ class InsentifKlasterChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Jumlah Inesentif',
+                    'label' => 'Jumlah Insentif',
                     'data' => $data->pluck('total')->toArray(),
                     'backgroundColor' => '#f5930b',
                     'borderColor' => '#d97706',
