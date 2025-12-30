@@ -6,7 +6,7 @@ use App\Filament\Resources\BookReferences\Pages\CreateBookReference;
 use App\Filament\Resources\BookReferences\Pages\EditBookReference;
 use App\Filament\Resources\BookReferences\Pages\ListBookReferences;
 use App\Filament\Resources\BookReferences\Schemas\BookReferenceForm;
-use App\Filament\Resources\BookReferences\Tables\BookReferenceTable;
+use App\Filament\Resources\BookReferences\Tables\BookReferencesTable;
 use App\Models\BookReference;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -36,7 +36,7 @@ class BookReferenceResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return BookReferenceTable::configure($table);
+        return BookReferencesTable::configure($table);
     }
 
     public static function getPages(): array
