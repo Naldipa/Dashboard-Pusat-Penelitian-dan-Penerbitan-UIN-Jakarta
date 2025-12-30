@@ -10,7 +10,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 
-class BookReferenceTable
+class BookReferencesTable
 {
     public static function configure(Table $table): Table
     {
