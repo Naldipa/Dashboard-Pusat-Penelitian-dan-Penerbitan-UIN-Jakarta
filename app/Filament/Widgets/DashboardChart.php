@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Pages\PenelitianByFakultas;
 
-class DashboardStats extends BaseWidget
+class DashboardChart extends BaseWidget
 {
     public string|int|null $filterYear = 'all';
 

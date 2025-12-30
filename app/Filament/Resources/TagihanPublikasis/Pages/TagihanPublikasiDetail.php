@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\TagihanPublikasis\Pages;
 
 use App\Filament\Resources\TagihanPublikasis\TagihanPublikasiResource;
-use App\Filament\Resources\TagihanPublikasis\Tables\TagihanPublikasiTable;
+use App\Filament\Resources\TagihanPublikasis\Tables\TagihanPublikasisTable;
 use App\Models\TagihanPublikasi;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Table;
@@ -38,7 +38,7 @@ class TagihanPublikasiDetail extends Page implements HasTable
     public function table(Table $table): Table
     {
         // 1. Get the base configuration from your existing table class
-        $table = TagihanPublikasiTable::configure($table);
+        $table = TagihanPublikasisTable::configure($table);
 
         // 2. Apply the filter query
         return $table->query(
